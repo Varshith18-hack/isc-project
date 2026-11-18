@@ -339,20 +339,23 @@ with st.sidebar:
                 persona = st.selectbox(
                     "Quick Persona Switch (RBAC):",
                     [
-                        "Dr. Sarah Smith (medical_staff)",
+                        "Dr. Varshith (medical_staff)",
                         "Chief Security Officer Alice (admin)",
-                        "Marcus Davis (auditor)",
+                        "Srujan (auditor)",
+                        "Nurse Sai (medical_staff)",
                     ],
                     index=0 if current_role == "medical_staff" else (1 if current_role == "admin" else 2),
                     key="persona_switch",
                 )
                 if st.button("Apply Role Switch", use_container_width=True):
-                    if "Dr. Sarah" in persona:
+                    if "Varshith" in persona or "Sarah" in persona or "dr_smith" in persona:
                         tgt = "dr_smith"
-                    elif "Chief Security" in persona:
+                    elif "Security" in persona or "admin" in persona or "Alice" in persona:
                         tgt = "admin"
-                    elif "Marcus Davis" in persona:
+                    elif "Srujan" in persona or "Davis" in persona or "auditor" in persona:
                         tgt = "auditor_davis"
+                    elif "Sai" in persona or "Clara" in persona or "nurse" in persona:
+                        tgt = "nurse_clara"
                     else:
                         tgt = "dr_smith"
 
@@ -424,6 +427,21 @@ with st.sidebar:
                 st.rerun()
             else:
                 st.error(msg)
+        if getattr(config, "DEMO_MODE", False):
+            if st.button("⬅️ Back to Demo Session", use_container_width=True):
+                seed_default_users()
+                doc_pwd = config.DEMO_CREDENTIALS["dr_smith"]["password"]
+                ok, msg, sess = authenticate_user("dr_smith", doc_pwd)
+                if ok and sess:
+                    st.session_state["authenticated"] = True
+                    st.session_state["user_id"] = sess["user_id"]
+                    st.session_state["username"] = sess["username"]
+                    st.session_state["full_name"] = sess["full_name"]
+                    st.session_state["role"] = sess["role"]
+                    st.session_state["session_token"] = sess["session_token"]
+                    st.session_state["last_activity"] = datetime.now()
+                    st.session_state.pop("session_expired_message", None)
+                    st.rerun()
 
     st.divider()
 
@@ -480,12 +498,85 @@ if not st.session_state.get("authenticated"):
     st.warning("🔒 **Authentication Required**: Please sign in via the sidebar to access clinical telemetry, cryptographic keys, and the secure audit ledger.")
     if getattr(config, "DEMO_MODE", False):
         st.info(
-            "💡 **Demonstration Credentials** (Loaded from `credentials.json`):\n\n"
-            "- **admin** / `Admin@123` (Role: `admin`)\n"
-            "- **dr_smith** / `Doctor@123` (Role: `medical_staff`)\n"
-            "- **nurse_clara** / `Nurse@123` (Role: `medical_staff`)\n"
-            "- **auditor_davis** / `Auditor@123` (Role: `auditor`)"
+            "💡 **Demonstration Credentials** (from `credentials.json`):\n\n"
+            "- **Admin**: `admin` / `Admin@123` (Admin - Chief Security Officer)\n"
+            "- **Doctor**: `dr_smith` (or `dr_varshith`) / `Doctor@123` (Dr. Varshith - ICU Lead)\n"
+            "- **Nurse**: `nurse_clara` (or `nurse_sai`) / `Nurse@123` (Nurse Sai - Telemetry Ward)\n"
+            "- **Auditor**: `auditor_davis` (or `auditor_srujan`) / `Auditor@123` (Srujan - Compliance Auditor)"
         )
+        st.markdown("##### ⚡ **One-Click Quick Login & Navigation:**")
+        qcol1, qcol2, qcol3, qcol4, qcol5 = st.columns(5)
+        with qcol1:
+            if st.button("⬅️ Back to App", use_container_width=True, key="btn_back_app"):
+                seed_default_users()
+                doc_pwd = config.DEMO_CREDENTIALS["dr_smith"]["password"]
+                ok, msg, sess = authenticate_user("dr_smith", doc_pwd)
+                if ok and sess:
+                    st.session_state["authenticated"] = True
+                    st.session_state["user_id"] = sess["user_id"]
+                    st.session_state["username"] = sess["username"]
+                    st.session_state["full_name"] = sess["full_name"]
+                    st.session_state["role"] = sess["role"]
+                    st.session_state["session_token"] = sess["session_token"]
+                    st.session_state["last_activity"] = datetime.now()
+                    st.session_state.pop("session_expired_message", None)
+                    st.rerun()
+        with qcol2:
+            if st.button("🔑 Login Admin", use_container_width=True, key="btn_quick_admin"):
+                seed_default_users()
+                ok, msg, sess = authenticate_user("admin", config.DEMO_CREDENTIALS["admin"]["password"])
+                if ok and sess:
+                    st.session_state["authenticated"] = True
+                    st.session_state["user_id"] = sess["user_id"]
+                    st.session_state["username"] = sess["username"]
+                    st.session_state["full_name"] = sess["full_name"]
+                    st.session_state["role"] = sess["role"]
+                    st.session_state["session_token"] = sess["session_token"]
+                    st.session_state["last_activity"] = datetime.now()
+                    st.session_state.pop("session_expired_message", None)
+                    st.rerun()
+        with qcol3:
+            if st.button("🩺 Login Dr. Varshith", use_container_width=True, key="btn_quick_doc"):
+                seed_default_users()
+                ok, msg, sess = authenticate_user("dr_smith", config.DEMO_CREDENTIALS["dr_smith"]["password"])
+                if ok and sess:
+                    st.session_state["authenticated"] = True
+                    st.session_state["user_id"] = sess["user_id"]
+                    st.session_state["username"] = sess["username"]
+                    st.session_state["full_name"] = sess["full_name"]
+                    st.session_state["role"] = sess["role"]
+                    st.session_state["session_token"] = sess["session_token"]
+                    st.session_state["last_activity"] = datetime.now()
+                    st.session_state.pop("session_expired_message", None)
+                    st.rerun()
+        with qcol4:
+            if st.button("💉 Login Nurse Sai", use_container_width=True, key="btn_quick_nurse"):
+                seed_default_users()
+                ok, msg, sess = authenticate_user("nurse_clara", config.DEMO_CREDENTIALS["nurse_clara"]["password"])
+                if ok and sess:
+                    st.session_state["authenticated"] = True
+                    st.session_state["user_id"] = sess["user_id"]
+                    st.session_state["username"] = sess["username"]
+                    st.session_state["full_name"] = sess["full_name"]
+                    st.session_state["role"] = sess["role"]
+                    st.session_state["session_token"] = sess["session_token"]
+                    st.session_state["last_activity"] = datetime.now()
+                    st.session_state.pop("session_expired_message", None)
+                    st.rerun()
+        with qcol5:
+            if st.button("⚖️ Login Auditor Srujan", use_container_width=True, key="btn_quick_auditor"):
+                seed_default_users()
+                ok, msg, sess = authenticate_user("auditor_davis", config.DEMO_CREDENTIALS["auditor_davis"]["password"])
+                if ok and sess:
+                    st.session_state["authenticated"] = True
+                    st.session_state["user_id"] = sess["user_id"]
+                    st.session_state["username"] = sess["username"]
+                    st.session_state["full_name"] = sess["full_name"]
+                    st.session_state["role"] = sess["role"]
+                    st.session_state["session_token"] = sess["session_token"]
+                    st.session_state["last_activity"] = datetime.now()
+                    st.session_state.pop("session_expired_message", None)
+                    st.rerun()
     st.stop()
 
 

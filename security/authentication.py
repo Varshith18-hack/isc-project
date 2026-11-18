@@ -208,23 +208,25 @@ def seed_default_users():
     with get_db_connection() as conn:
         cursor = conn.cursor()
         for acc in default_accounts:
-            cursor.execute("SELECT user_id, password_hash FROM users WHERE username = ?", (acc["username"],))
+            cursor.execute("SELECT user_id, password_hash, full_name FROM users WHERE username = ?", (acc["username"],))
             existing = cursor.fetchone()
             if not existing:
-                register_user(
-                    username=acc["username"],
-                    password=acc["password"],
-                    full_name=acc["full_name"],
-                    role=acc["role"],
-                    user_id=acc["user_id"],
-                )
+                uid = acc.get("user_id") or f"USR-{secrets.token_hex(4).upper()}"
+                pwd_hash = hash_password(acc["password"])
+                now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                cursor.execute("""
+                    INSERT INTO users (user_id, username, password_hash, full_name, role, is_active, failed_login_attempts, locked_until, created_at)
+                    VALUES (?, ?, ?, ?, ?, 1, 0, NULL, ?)
+                """, (uid, acc["username"], pwd_hash, acc["full_name"], acc["role"], now_str))
             else:
-                # If existing account uses deprecated password, update hash to match rotated credential
-                if not verify_password(acc["password"], existing["password_hash"]):
+                existing_dict = dict(existing)
+                pwd_match = verify_password(acc["password"], existing_dict.get("password_hash", ""))
+                name_match = (existing_dict.get("full_name") == acc["full_name"])
+                if not pwd_match or not name_match:
                     new_hash = hash_password(acc["password"])
                     cursor.execute(
-                        "UPDATE users SET password_hash = ?, failed_login_attempts = 0, locked_until = NULL WHERE username = ?",
-                        (new_hash, acc["username"]),
+                        "UPDATE users SET password_hash = ?, full_name = ?, failed_login_attempts = 0, locked_until = NULL WHERE username = ?",
+                        (new_hash, acc["full_name"], acc["username"]),
                     )
     return True, "Demo accounts seeded/updated successfully."
 
