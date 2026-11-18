@@ -138,6 +138,27 @@ class TestMedicalDeviceAnomalyDetection(unittest.TestCase):
         self.assertEqual(res_df["model_prediction"].iloc[0], "NORMAL")
         self.assertEqual(res_df["model_prediction"].iloc[1], "ANOMALY")
 
+    def test_08_batch_inference_only_six_features_and_model_is_anomaly(self):
+        """Verify that batch inference works on a CSV with only the 6 feature columns and accurately computes model_is_anomaly."""
+        df_six_cols = pd.DataFrame([
+            {
+                "heart_rate": 72.0, "systolic_bp": 118.0, "diastolic_bp": 76.0,
+                "oxygen_saturation": 98.5, "body_temperature": 36.8,
+                "device_activity_level": 22.0,
+            },
+            {
+                "heart_rate": 185.0, "systolic_bp": 180.0, "diastolic_bp": 115.0,
+                "oxygen_saturation": 95.0, "body_temperature": 37.0,
+                "device_activity_level": 30.0,
+            },
+        ])
+        self.assertNotIn("is_anomaly", df_six_cols.columns)
+        res_df = self.detector.predict_batch(df_six_cols)
+        self.assertIn("model_is_anomaly", res_df.columns)
+        self.assertEqual(int(res_df["model_is_anomaly"].sum()), 1)
+        self.assertEqual(res_df["model_is_anomaly"].iloc[0], 0)
+        self.assertEqual(res_df["model_is_anomaly"].iloc[1], 1)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -13,6 +13,7 @@ This module centralizes all configuration settings across the application:
 """
 
 import os
+import json
 from pathlib import Path
 
 # ==============================================================================
@@ -205,40 +206,16 @@ else:
 SERVER_HOST = os.environ.get("STREAMLIT_SERVER_ADDRESS", "127.0.0.1")
 SERVER_PORT = int(os.environ.get("STREAMLIT_SERVER_PORT", "8501"))
 
+CREDENTIALS_FILE_PATH = BASE_DIR / "credentials.json"
+
 # Configurable Demo Credentials (Development / Evaluation Mode Only)
-# Rotated from previously exposed credentials; overridable via environment variables.
-# In production, this dictionary is strictly empty to prevent pre-configured account injection.
+# Loaded directly from credentials.json; in production, this dictionary is strictly empty.
 if not DEMO_MODE:
     DEMO_CREDENTIALS = {}
 else:
-    DEMO_CREDENTIALS = {
-        "admin": {
-            "username": os.environ.get("DEMO_ADMIN_USERNAME", "admin"),
-            "password": os.environ.get("DEMO_ADMIN_PASSWORD", "K8x#mP9$vL2@wQ5!zR4"),
-            "full_name": "Chief Security Officer Alice",
-            "role": "admin",
-            "user_id": "USR-ADMIN-01",
-        },
-        "dr_smith": {
-            "username": os.environ.get("DEMO_DOCTOR_USERNAME", "dr_smith"),
-            "password": os.environ.get("DEMO_DOCTOR_PASSWORD", "C9$yT2#uJ8!pW4@vN6"),
-            "full_name": "Dr. Sarah Smith (ICU Lead)",
-            "role": "medical_staff",
-            "user_id": "USR-DOC-02",
-        },
-        "nurse_clara": {
-            "username": os.environ.get("DEMO_NURSE_USERNAME", "nurse_clara"),
-            "password": os.environ.get("DEMO_NURSE_PASSWORD", "W3@zE7!rX9#tB2$mK5"),
-            "full_name": "Nurse Clara Barton (Telemetry Ward)",
-            "role": "medical_staff",
-            "user_id": "USR-NURSE-03",
-        },
-        "auditor_davis": {
-            "username": os.environ.get("DEMO_AUDITOR_USERNAME", "auditor_davis"),
-            "password": os.environ.get("DEMO_AUDITOR_PASSWORD", "A4#bH7$kM1@yV8!pQ3"),
-            "full_name": "Marcus Davis (Compliance Auditor)",
-            "role": "auditor",
-            "user_id": "USR-AUDIT-04",
-        },
-    }
+    if CREDENTIALS_FILE_PATH.exists():
+        with open(CREDENTIALS_FILE_PATH, "r", encoding="utf-8") as f:
+            DEMO_CREDENTIALS = json.load(f)
+    else:
+        DEMO_CREDENTIALS = {}
 

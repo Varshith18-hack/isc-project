@@ -56,9 +56,11 @@ def _restrict_file_permissions(file_path: Path):
             os.chmod(file_path, 0o600)
         else:
             user = os.environ.get("USERNAME")
+            domain = os.environ.get("USERDOMAIN")
             if user:
+                user_spec = f"{domain}\\{user}" if domain else user
                 subprocess.run(
-                    ["icacls", str(file_path), "/inheritance:r", "/grant:r", f"{user}:(R,W)"],
+                    ["icacls", str(file_path), "/inheritance:r", "/grant:r", f"{user_spec}:(F)"],
                     capture_output=True,
                     check=False,
                 )

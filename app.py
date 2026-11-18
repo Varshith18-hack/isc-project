@@ -189,6 +189,24 @@ st.markdown(
 
 initialize_database()
 
+def ensure_audit_chain_initialized():
+    """Ensure a fresh verified 4-block audit chain exists on initial launch."""
+    try:
+        chain = load_audit_chain()
+        if not chain or len(chain) == 0:
+            sample_events = [
+                ("DEV-PUMP-001", "TELEMETRY_INGESTION", {"status": "NORMAL", "heart_rate": 74.0, "systolic_bp": 118.0, "oxygen_saturation": 98.5}),
+                ("DEV-VENT-002", "VENTILATOR_TELEMETRY", {"status": "NORMAL", "tidal_volume": 480, "respiratory_rate": 16.0, "peep": 5.0}),
+                ("USR-ADMIN-01", "SYSTEM_KEY_ROTATION", {"action": "HKDF_KEY_DERIVATION", "status": "ARMED", "scope": "FLEET_WIDE"}),
+                ("USR-DOC-02", "CLINICAL_ACCESS_LOGIN", {"username": "dr_smith", "role": "medical_staff", "session_status": "ACTIVE"}),
+            ]
+            for uid, etype, details in sample_events:
+                append_audit_event(user_id=uid, event_type=etype, event_details=details)
+    except Exception:
+        pass
+
+ensure_audit_chain_initialized()
+
 # Cache AI Anomaly Detector
 @st.cache_resource(show_spinner=False)
 def get_ai_detector():
@@ -199,6 +217,17 @@ def get_ai_detector():
         return None
 
 ai_detector = get_ai_detector()
+
+@st.cache_data(show_spinner=False)
+def get_scored_telemetry_dataset():
+    """Run model prediction on the telemetry dataset and cache the scored dataframe."""
+    df = load_telemetry_dataset()
+    if df.empty:
+        return df
+    detector = get_ai_detector()
+    if detector is None:
+        return None
+    return detector.predict_batch(df)
 
 # Session Inactivity Check (30-Minute Expiration)
 SESSION_TIMEOUT_MINUTES = getattr(config, "SESSION_TIMEOUT_MINUTES", 30)
@@ -450,7 +479,13 @@ if not st.session_state.get("authenticated"):
         st.error(f"⚠️ {st.session_state['session_expired_message']}")
     st.warning("🔒 **Authentication Required**: Please sign in via the sidebar to access clinical telemetry, cryptographic keys, and the secure audit ledger.")
     if getattr(config, "DEMO_MODE", False):
-        st.info("💡 **Demonstration Credentials**: You can log in using `admin`, `dr_smith`, or `auditor_davis`.")
+        st.info(
+            "💡 **Demonstration Credentials** (Loaded from `credentials.json`):\n\n"
+            "- **admin** / `Admin@123` (Role: `admin`)\n"
+            "- **dr_smith** / `Doctor@123` (Role: `medical_staff`)\n"
+            "- **nurse_clara** / `Nurse@123` (Role: `medical_staff`)\n"
+            "- **auditor_davis** / `Auditor@123` (Role: `auditor`)"
+        )
     st.stop()
 
 
@@ -474,6 +509,10 @@ if nav_selection == "🏥 Hospital Overview & Executive Health":
     df_telemetry = load_telemetry_dataset()
     chain_summary = get_audit_chain_summary()
     recent_events = get_security_events(limit=10)
+    scored_telemetry = get_scored_telemetry_dataset()
+
+    if scored_telemetry is None:
+        st.error("🚨 **AI Model Missing / Load Error**: Could not load `models/saved_model.pkl`. Please ensure the model file is trained and present.")
 
     # Top KPI Metrics Row
     c1, c2, c3, c4 = st.columns(4)
@@ -483,8 +522,13 @@ if nav_selection == "🏥 Hospital Overview & Executive Health":
         tot_records = f"{len(df_telemetry):,}" if not df_telemetry.empty else "10,000"
         render_kpi_card("Telemetry Records", tot_records, "Physiological & Network Streams", "normal")
     with c3:
-        anom_rate = "584 (5.84%)" if not df_telemetry.empty else "584 (5.84%)"
-        render_kpi_card("Detected Threat Events", anom_rate, "6 Medical & Cyber Threat Classes", "warning")
+        if scored_telemetry is not None and not scored_telemetry.empty and "model_is_anomaly" in scored_telemetry.columns:
+            tot_anoms = int(scored_telemetry["model_is_anomaly"].sum())
+            pct = (tot_anoms / len(scored_telemetry)) * 100
+            anom_rate = f"{tot_anoms} ({pct:.2f}%)"
+            render_kpi_card("Detected Threat Events", anom_rate, "Model Inferences (Isolation Forest)", "warning")
+        else:
+            render_kpi_card("Detected Threat Events", "Error", "AI Model File Missing", "warning")
     with c4:
         blocks_num = f"{chain_summary.get('total_blocks', 0)} Blocks"
         render_kpi_card("Cryptographic Audit Chain", blocks_num, "Zero Bit Drift | HMAC Authenticated", "success")
@@ -528,21 +572,28 @@ if nav_selection == "🏥 Hospital Overview & Executive Health":
 
     with col_alerts:
         st.markdown("### 🚨 **Live Threat Intelligence Feed (Medical vs Cyber Attacks)**")
-        if not df_telemetry.empty:
-            anom_df = df_telemetry[df_telemetry["is_anomaly"] == 1].tail(8).copy()
+        if scored_telemetry is None:
+            st.error("🚨 **Model Error**: Live threat intelligence feed unavailable because `models/saved_model.pkl` is missing.")
+        elif not scored_telemetry.empty and "model_is_anomaly" in scored_telemetry.columns:
+            anom_df = scored_telemetry[scored_telemetry["model_is_anomaly"] == 1].tail(8).copy()
+            feed_cols = ["reading_id", "timestamp", "device_id", "device_type", "heart_rate", "oxygen_saturation"]
+            rename_map = {
+                "reading_id": "Alert ID",
+                "timestamp": "Timestamp",
+                "device_id": "Device ID",
+                "device_type": "Device Type",
+                "heart_rate": "HR (bpm)",
+                "oxygen_saturation": "SpO2 (%)",
+            }
+            if "anomaly_type" in anom_df.columns:
+                feed_cols.append("anomaly_type")
+                rename_map["anomaly_type"] = "Threat Classification"
+            elif "model_severity" in anom_df.columns:
+                feed_cols.append("model_severity")
+                rename_map["model_severity"] = "Model Severity"
+
             st.dataframe(
-                anom_df[[
-                    "reading_id", "timestamp", "device_id", "device_type",
-                    "heart_rate", "oxygen_saturation", "anomaly_type"
-                ]].rename(columns={
-                    "reading_id": "Alert ID",
-                    "timestamp": "Timestamp",
-                    "device_id": "Device ID",
-                    "device_type": "Device Type",
-                    "heart_rate": "HR (bpm)",
-                    "oxygen_saturation": "SpO2 (%)",
-                    "anomaly_type": "Threat Classification",
-                }),
+                anom_df[[c for c in feed_cols if c in anom_df.columns]].rename(columns=rename_map),
                 use_container_width=True,
                 hide_index=True,
             )
@@ -740,7 +791,8 @@ elif nav_selection == "🤖 AI Anomaly Detection Lab":
                     if st.button("Run Batch Inference on Uploaded CSV"):
                         with st.spinner("Scoring records using Isolation Forest..."):
                             scored_df = ai_detector.predict_batch(batch_df)
-                            anom_count = scored_df["is_anomaly"].sum()
+                            anom_col = "model_is_anomaly" if "model_is_anomaly" in scored_df.columns else "is_anomaly"
+                            anom_count = int(scored_df[anom_col].sum())
                             st.write(f"Inference complete: **{anom_count} anomalies detected** out of {len(scored_df)} records ({anom_count/len(scored_df)*100:.2f}%).")
                             st.dataframe(scored_df, use_container_width=True)
 
@@ -1086,12 +1138,19 @@ elif nav_selection == "🛡️ Authentication and RBAC Management":
             target_user = st.selectbox("Target Username:", active_users, index=default_idx)
             input_pass = st.text_input("Enter Password:", type="password", key="lockout_pwd")
 
-            if st.button("Submit Login Attempt"):
-                success, msg, sess = authenticate_user(target_user, input_pass)
-                if success:
-                    st.success(f"Authentication Successful! Logged in as: {target_user}")
-                else:
-                    st.error(f"Authentication Failed: {msg}")
+            if user_role != "admin":
+                st.info("🔒 **Admin Only:** Only administrators may submit login attempts in this testing console.")
+            else:
+                if st.button("Submit Login Attempt"):
+                    curr_logged_in = st.session_state.get("username")
+                    if target_user == curr_logged_in:
+                        st.warning("⚠️ Cannot run brute-force lockout tests on the currently logged-in user to prevent session invalidation. Please select a different target user.")
+                    else:
+                        success, msg, sess = authenticate_user(target_user, input_pass)
+                        if success:
+                            st.success(f"Authentication Successful! Logged in as: {target_user}")
+                        else:
+                            st.error(f"Authentication Failed: {msg}")
 
         with col_lock2:
             st.markdown("##### Live Account Lockout Status")

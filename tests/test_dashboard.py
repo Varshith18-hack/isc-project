@@ -248,10 +248,22 @@ class TestDashboardComponents(unittest.TestCase):
 
     def test_11_lockout_console_dynamic_target_users(self):
         """Verify Brute-Force Lockout Testing Console dynamically loads active registered users."""
+        from security.authentication import register_user
+        register_user("surya", "SuryaPass123!", "Surya Staff", "medical_staff")
+
         from streamlit.testing.v1 import AppTest
 
         at = AppTest.from_file(str(PROJECT_ROOT / "app.py"), default_timeout=30)
         at.run()
+
+        # Switch to Admin persona so admin-only lockout testing console is active
+        persona_select = [s for s in at.selectbox if "Persona" in s.label]
+        if persona_select:
+            admin_opt = [opt for opt in persona_select[0].options if "admin" in opt.lower()][0]
+            persona_select[0].select(admin_opt).run()
+            switch_btns = [b for b in at.button if "Apply Role Switch" in b.label]
+            if switch_btns:
+                switch_btns[0].click().run()
 
         # Switch to Authentication and RBAC Management
         nav_radio = [r for r in at.sidebar.radio if "Select Subsystem Page" in r.label][0]

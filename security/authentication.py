@@ -16,6 +16,7 @@ Implements user authentication and credential security:
 """
 
 import sys
+import os
 import re
 import secrets
 import hashlib

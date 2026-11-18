@@ -1,7 +1,7 @@
 {
-  "latest_event_id": 7,
-  "latest_hash": "7276cc04e8e6c5072f66732965e9d7148c2d1b00d4b38903a6aa17fa645c94df",
-  "total_events": 7,
-  "timestamp": "2026-11-10 18:58:40",
-  "checkpoint_hmac": "c7405f6e3084a41da2d3c084f4142af643bb3c89ae34576eb88234a8f4180ac8"
+  "latest_event_id": 4,
+  "latest_hash": "9d5096b6b64a76dd776e7085b0e704752ba5192b90eeb61067173c29dc35c554",
+  "total_events": 4,
+  "timestamp": "2026-11-18 22:25:14",
+  "checkpoint_hmac": "1504045709629a3e6f7b7b14ccf9e8e48635becb39bd2c9b87c80bdcae2bfe7f"
 }

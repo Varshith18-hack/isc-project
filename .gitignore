@@ -8,12 +8,19 @@ security/.master_key.key
 __pycache__/
 *.py[cod]
 *$py.class
-*.pkl
 
 # Databases and Local Logs
 database/*.db
+local_store/
 audit/audit_chain.json
+audit/audit_chain.lock
+*.lock
 *.log
+.chain_checkpoint.json
+*/.chain_checkpoint.json
+audit/.chain_checkpoint.json
+security/.chain_checkpoint.json
+audit/.demo_sandbox/
 
 # IDE & OS Metadata
 .vscode/
