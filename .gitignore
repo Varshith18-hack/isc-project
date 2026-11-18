@@ -1,0 +1,23 @@
+# Security & Environment Secrets
+.env
+.env.local
+*.key
+security/.master_key.key
+
+# Python Bytecode & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pkl
+
+# Databases and Local Logs
+database/*.db
+audit/audit_chain.json
+*.log
+
+# IDE & OS Metadata
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+

@@ -1,0 +1,14 @@
+[server]
+# Strictly bind to IPv4 loopback to prevent exposure on institutional LAN (e.g. 172.32.8.15)
+address = "127.0.0.1"
+port = 8501
+headless = true
+enableCORS = true
+enableXsrfProtection = true
+maxUploadSize = 200
+
+[browser]
+gatherUsageStats = false
+
+[client]
+showErrorDetails = false

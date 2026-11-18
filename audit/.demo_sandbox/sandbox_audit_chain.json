@@ -1,0 +1,178 @@
+[
+  {
+    "event_id": 1,
+    "entry_id": 1,
+    "timestamp": "2026-11-10 17:06:22",
+    "user_id": "DEV-VENT-002",
+    "entity_id": "DEV-VENT-002",
+    "event_type": "TELEMETRY_ENCRYPTED",
+    "event_details": {
+      "heart_rate": 74.0,
+      "oxygen_saturation": 98.4,
+      "ai_decision": "NORMAL"
+    },
+    "payload": {
+      "heart_rate": 74.0,
+      "oxygen_saturation": 98.4,
+      "ai_decision": "NORMAL"
+    },
+    "payload_hash": "b6db29a76510b10ca3d2028ab38e0dc3e5f7792da284f215a27f8637b6c3b096",
+    "previous_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+    "current_hash": "6bfa7cc8450fda3a40370369a019132996b02cc5e38535a02f41ff9360cf072a",
+    "hmac_tag": "4ae0d8058f66f88a0cd355e71d50318769b0b995e47eff05e1ce0c6300718528"
+  },
+  {
+    "event_id": 2,
+    "entry_id": 2,
+    "timestamp": "2026-11-10 17:06:22",
+    "user_id": "DEV-PUMP-001",
+    "entity_id": "DEV-PUMP-001",
+    "event_type": "ANOMALY_DETECTED",
+    "event_details": {
+      "anomaly_type": "Rapid_Battery_Drain",
+      "ai_score": 0.6521,
+      "severity": "CRITICAL"
+    },
+    "payload": {
+      "anomaly_type": "Rapid_Battery_Drain",
+      "ai_score": 0.6521,
+      "severity": "CRITICAL"
+    },
+    "payload_hash": "7ae200d9804bc25c044f40de44c82763b6f469efb3583519fd3cc16c6888abe4",
+    "previous_hash": "6bfa7cc8450fda3a40370369a019132996b02cc5e38535a02f41ff9360cf072a",
+    "current_hash": "c0c50fd56c7a8dfc4cd39a7ef95425f67a1e8d0009d2f048e5eaaa40085655fb",
+    "hmac_tag": "211d783de02662d5570d5a1e2f764cbf0be3b6248ccdc738bc2aa29931b77499"
+  },
+  {
+    "event_id": 3,
+    "entry_id": 3,
+    "timestamp": "2026-11-10 17:06:22",
+    "user_id": "USR-DOC-02",
+    "entity_id": "USR-DOC-02",
+    "event_type": "ANOMALY_ALERT_VIEWED",
+    "event_details": {
+      "action": "Doctor acknowledged infusion pump anomaly alert",
+      "doctor": "Dr. Sarah Smith"
+    },
+    "payload": {
+      "action": "Doctor acknowledged infusion pump anomaly alert",
+      "doctor": "Dr. Sarah Smith"
+    },
+    "payload_hash": "9167a939afc28bbc03e1065eed6850f7553651164de7516a257be5f068dba3a3",
+    "previous_hash": "c0c50fd56c7a8dfc4cd39a7ef95425f67a1e8d0009d2f048e5eaaa40085655fb",
+    "current_hash": "1d85aaf2bda7e03e9417bb388fee26e3f9ab92e53c34eb213054901777f9abf2",
+    "hmac_tag": "c5d38f1d0662f6f034c24f2da3d3232609d128833270074b4c7fb449b36d0eab"
+  },
+  {
+    "event_id": 4,
+    "entry_id": 4,
+    "timestamp": "2026-11-10 17:08:08",
+    "user_id": "DEV-VENT-002",
+    "entity_id": "DEV-VENT-002",
+    "event_type": "TELEMETRY_INGESTED",
+    "event_details": {
+      "reading_id": "REC-007890",
+      "device_type": "Mechanical Ventilator",
+      "ai_status": "NORMAL",
+      "ai_score": 0.4993,
+      "sha256": "8f54e767caf5dcbfa353ae588dc56a45781ffe97a91b0be89226a3af5e1aa467",
+      "hmac_tag": "a5a7cd2f579ea87ac5a74af17ba08d7272711edad2de99f90a703d131ef32a97"
+    },
+    "payload": {
+      "reading_id": "REC-007890",
+      "device_type": "Mechanical Ventilator",
+      "ai_status": "NORMAL",
+      "ai_score": 0.4993,
+      "sha256": "8f54e767caf5dcbfa353ae588dc56a45781ffe97a91b0be89226a3af5e1aa467",
+      "hmac_tag": "a5a7cd2f579ea87ac5a74af17ba08d7272711edad2de99f90a703d131ef32a97"
+    },
+    "payload_hash": "da6cc5db1cc7457f28d5889d43946e8ec43634e85d4811f29db00162c9d253c7",
+    "previous_hash": "1d85aaf2bda7e03e9417bb388fee26e3f9ab92e53c34eb213054901777f9abf2",
+    "current_hash": "1f8fe7fa30dbfe977626425f44e6208000f4e1baebb34e37d0c56735c3fa222c",
+    "hmac_tag": "6156afdf7285d59f432af0c738176e1b67699c8896a2aae38102098889994d2f"
+  },
+  {
+    "event_id": 5,
+    "entry_id": 5,
+    "timestamp": "2026-11-10 17:28:09",
+    "user_id": "DEV-VENT-002",
+    "entity_id": "DEV-VENT-002",
+    "event_type": "TELEMETRY_INGESTED",
+    "event_details": {
+      "reading_id": "REC-007890",
+      "device_type": "Mechanical Ventilator",
+      "ai_status": "NORMAL",
+      "ai_score": 0.4993,
+      "sha256": "8f54e767caf5dcbfa353ae588dc56a45781ffe97a91b0be89226a3af5e1aa467",
+      "hmac_tag": "a5a7cd2f579ea87ac5a74af17ba08d7272711edad2de99f90a703d131ef32a97"
+    },
+    "payload": {
+      "reading_id": "REC-007890",
+      "device_type": "Mechanical Ventilator",
+      "ai_status": "NORMAL",
+      "ai_score": 0.4993,
+      "sha256": "8f54e767caf5dcbfa353ae588dc56a45781ffe97a91b0be89226a3af5e1aa467",
+      "hmac_tag": "a5a7cd2f579ea87ac5a74af17ba08d7272711edad2de99f90a703d131ef32a97"
+    },
+    "payload_hash": "da6cc5db1cc7457f28d5889d43946e8ec43634e85d4811f29db00162c9d253c7",
+    "previous_hash": "1f8fe7fa30dbfe977626425f44e6208000f4e1baebb34e37d0c56735c3fa222c",
+    "current_hash": "e8ab7b4d909f80954d9375e73600c33b810865da5cd59850864e3d9c5b92e4b2",
+    "hmac_tag": "68fdd8a8170977b7b0d4703ee600a16aa6af4969fc41c11512c41ba18622baa1"
+  },
+  {
+    "event_id": 6,
+    "entry_id": 6,
+    "timestamp": "2026-11-10 17:44:57",
+    "user_id": "DEV-VENT-002",
+    "entity_id": "DEV-VENT-002",
+    "event_type": "TELEMETRY_INGESTED",
+    "event_details": {
+      "reading_id": "REC-007890",
+      "device_type": "Mechanical Ventilator",
+      "ai_status": "NORMAL",
+      "ai_score": 0.4993,
+      "sha256": "8f54e767caf5dcbfa353ae588dc56a45781ffe97a91b0be89226a3af5e1aa467",
+      "hmac_tag": "a5a7cd2f579ea87ac5a74af17ba08d7272711edad2de99f90a703d131ef32a97"
+    },
+    "payload": {
+      "reading_id": "REC-007890",
+      "device_type": "Mechanical Ventilator",
+      "ai_status": "NORMAL",
+      "ai_score": 0.4993,
+      "sha256": "8f54e767caf5dcbfa353ae588dc56a45781ffe97a91b0be89226a3af5e1aa467",
+      "hmac_tag": "a5a7cd2f579ea87ac5a74af17ba08d7272711edad2de99f90a703d131ef32a97"
+    },
+    "payload_hash": "da6cc5db1cc7457f28d5889d43946e8ec43634e85d4811f29db00162c9d253c7",
+    "previous_hash": "e8ab7b4d909f80954d9375e73600c33b810865da5cd59850864e3d9c5b92e4b2",
+    "current_hash": "a8a5c42094c9a3d9ce558f6527f00b9a89906e918d54819387f1dd98528b1f1e",
+    "hmac_tag": "1d0334f0dde65a46f85d6a321aaa96c5e27059b6a941c08289a28c93401331de"
+  },
+  {
+    "event_id": 7,
+    "entry_id": 7,
+    "timestamp": "2026-11-10 18:58:40",
+    "user_id": "DEV-VENT-002",
+    "entity_id": "DEV-VENT-002",
+    "event_type": "TELEMETRY_INGESTED",
+    "event_details": {
+      "reading_id": "REC-007890",
+      "device_type": "Mechanical Ventilator",
+      "ai_status": "NORMAL",
+      "ai_score": 0.4993,
+      "sha256": "8f54e767caf5dcbfa353ae588dc56a45781ffe97a91b0be89226a3af5e1aa467",
+      "hmac_tag": "a5a7cd2f579ea87ac5a74af17ba08d7272711edad2de99f90a703d131ef32a97"
+    },
+    "payload": {
+      "reading_id": "REC-007890",
+      "device_type": "Mechanical Ventilator",
+      "ai_status": "NORMAL",
+      "ai_score": 0.4993,
+      "sha256": "8f54e767caf5dcbfa353ae588dc56a45781ffe97a91b0be89226a3af5e1aa467",
+      "hmac_tag": "a5a7cd2f579ea87ac5a74af17ba08d7272711edad2de99f90a703d131ef32a97"
+    },
+    "payload_hash": "da6cc5db1cc7457f28d5889d43946e8ec43634e85d4811f29db00162c9d253c7",
+    "previous_hash": "a8a5c42094c9a3d9ce558f6527f00b9a89906e918d54819387f1dd98528b1f1e",
+    "current_hash": "7276cc04e8e6c5072f66732965e9d7148c2d1b00d4b38903a6aa17fa645c94df",
+    "hmac_tag": "8b9da4e31e2f28ff79f493613b6afe3afa0274ce2aeab2bb81bc360c8c5dd98f"
+  }
+]

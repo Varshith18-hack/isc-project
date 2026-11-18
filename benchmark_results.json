@@ -1,0 +1,86 @@
+{
+  "timestamp": "2026-11-10 19:12:23",
+  "platform": "win32",
+  "python_version": "3.13.1",
+  "baseline_memory_mb": 219.84,
+  "ai_inference": {
+    "iterations": 1000,
+    "mean_ms": 16.3296,
+    "median_ms": 15.5853,
+    "p95_ms": 19.4382,
+    "p99_ms": 29.0424,
+    "min_ms": 12.7545,
+    "max_ms": 77.259,
+    "throughput_inferences_per_sec": 61.2
+  },
+  "cryptography": {
+    "iterations": 1000,
+    "encryption": {
+      "mean_ms": 0.1437,
+      "median_ms": 0.1249,
+      "p95_ms": 0.1331,
+      "throughput_enc_per_sec": 6961.2
+    },
+    "decryption": {
+      "mean_ms": 0.1075,
+      "median_ms": 0.1082,
+      "p95_ms": 0.1202,
+      "throughput_dec_per_sec": 9299.5
+    }
+  },
+  "pipeline_throughput": {
+    "iterations": 500,
+    "mean_ms": 15.7157,
+    "median_ms": 15.5895,
+    "p95_ms": 17.2035,
+    "end_to_end_throughput_records_sec": 63.6
+  },
+  "dashboard": {
+    "dataset_rows": 10000,
+    "dataset_load_ms": 88.81,
+    "vitals_time_series_chart_ms": 101.78,
+    "network_activity_chart_ms": 16.78,
+    "anomaly_gauge_chart_ms": 26.81,
+    "total_page_load_ms": 234.18
+  },
+  "audit_verification_scaling": {
+    "10_blocks": {
+      "blocks": 10,
+      "verification_time_ms": 146.15,
+      "time_per_block_us": 14615.18
+    },
+    "50_blocks": {
+      "blocks": 50,
+      "verification_time_ms": 564.39,
+      "time_per_block_us": 11287.89
+    },
+    "100_blocks": {
+      "blocks": 100,
+      "verification_time_ms": 1139.34,
+      "time_per_block_us": 11393.39
+    },
+    "250_blocks": {
+      "blocks": 250,
+      "verification_time_ms": 3144.06,
+      "time_per_block_us": 12576.23
+    },
+    "500_blocks": {
+      "blocks": 500,
+      "verification_time_ms": 6421.04,
+      "time_per_block_us": 12842.07
+    }
+  },
+  "concurrent_ingestion": {
+    "device_count": 5,
+    "records_per_device": 20,
+    "total_records": 100,
+    "total_elapsed_s": 6.389,
+    "effective_throughput_records_sec": 15.7
+  },
+  "memory": {
+    "baseline_rss_mb": 219.84,
+    "peak_rss_mb": 234.16,
+    "memory_delta_mb": 14.31,
+    "post_gc_rss_mb": 234.16
+  }
+}
