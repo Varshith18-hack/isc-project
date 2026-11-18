@@ -413,7 +413,11 @@ with st.sidebar:
         login_u = st.text_input("Username:", key="sb_login_u")
         login_p = st.text_input("Password:", type="password", key="sb_login_p")
         if st.button("Sign In (Argon2id)", use_container_width=True):
-            ok, msg, sess = authenticate_user(login_u, login_p)
+            clean_u = (login_u or "").strip()
+            clean_p = (login_p or "").strip()
+            if getattr(config, "DEMO_MODE", False):
+                seed_default_users()
+            ok, msg, sess = authenticate_user(clean_u, clean_p)
             if ok and sess:
                 st.session_state["authenticated"] = True
                 st.session_state["user_id"] = sess["user_id"]

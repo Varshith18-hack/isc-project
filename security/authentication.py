@@ -225,8 +225,13 @@ def seed_default_users():
                 if not pwd_match or not name_match:
                     new_hash = hash_password(acc["password"])
                     cursor.execute(
-                        "UPDATE users SET password_hash = ?, full_name = ?, failed_login_attempts = 0, locked_until = NULL WHERE username = ?",
+                        "UPDATE users SET password_hash = ?, full_name = ?, failed_login_attempts = 0, locked_until = NULL, is_active = 1 WHERE username = ?",
                         (new_hash, acc["full_name"], acc["username"]),
+                    )
+                else:
+                    cursor.execute(
+                        "UPDATE users SET failed_login_attempts = 0, locked_until = NULL, is_active = 1 WHERE username = ?",
+                        (acc["username"],),
                     )
     return True, "Demo accounts seeded/updated successfully."
 
